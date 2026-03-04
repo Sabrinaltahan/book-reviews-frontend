@@ -1,6 +1,7 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { apiFetch } from "../lib/api";
+import {Link} from "react-router-dom";
 
 type Review = {
   id: string;
@@ -203,7 +204,11 @@ export default function Home() {
             borderRadius: 8,
           }}
         >
-          <h3>Book: {r.objectId}</h3>
+        <h3>
+  <Link to={`/books/${r.objectId}`}>
+    Book: {r.objectId}
+  </Link>
+</h3>
 
           {editingId === r.id ? (
             <>
