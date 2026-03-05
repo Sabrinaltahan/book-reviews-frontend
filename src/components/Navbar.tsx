@@ -1,4 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
+import "./Navbar.css";
 
 export default function Navbar() {
   const nav = useNavigate();
@@ -10,31 +11,22 @@ export default function Navbar() {
   }
 
   return (
-    <nav style={{
-      display: "flex",
-      justifyContent: "space-between",
-      padding: "10px 20px",
-      borderBottom: "1px solid #ddd",
-      marginBottom: "20px"
-    }}>
-      <div>
-        <Link to="/" style={{ marginRight: 10 }}>Home</Link>
-      </div>
+    <div className="navbar">
+      <div className="navbarInner">
+        <div className="brand">Book Reviews</div>
 
-      <div>
-        {!token && (
-          <>
-            <Link to="/login" style={{ marginRight: 10 }}>Login</Link>
-            <Link to="/register">Register</Link>
-          </>
-        )}
-
-        {token && (
-          <button onClick={logout}>
-            Logout
-          </button>
-        )}
+        <div className="navLinks">
+          <Link to="/" className="btn">Home</Link>
+          {token ? (
+            <button className="btn btnDanger" onClick={logout}>Logout</button>
+          ) : (
+            <>
+              <Link to="/login" className="btn btnPrimary">Login</Link>
+              <Link to="/register" className="btn">Register</Link>
+            </>
+          )}
+        </div>
       </div>
-    </nav>
+    </div>
   );
 }

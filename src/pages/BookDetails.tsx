@@ -12,7 +12,7 @@ type Review = {
 };
 
 export default function BookDetails() {
-  const { id } = useParams(); // هذا هو objectId
+  const { id } = useParams();
   const nav = useNavigate();
 
   const objectId = useMemo(() => (id ? String(id) : ""), [id]);
@@ -34,7 +34,6 @@ export default function BookDetails() {
     setError(null);
     setLoading(true);
     try {
-      // ✅ endpoint العام (بدون توكن)
       const data = await apiFetch<Review[]>(`/reviews/object/${objectId}`, {
         method: "GET",
       });
@@ -67,7 +66,6 @@ export default function BookDetails() {
 
     setLoading(true);
     try {
-      // ✅ محمي (لازم توكن)
       await apiFetch<Review>("/reviews", {
         method: "POST",
         body: JSON.stringify({
@@ -89,70 +87,95 @@ export default function BookDetails() {
   }
 
   return (
-    <div style={{ padding: 16, maxWidth: 900 }}>
-      <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
-        <Link to="/">← Back</Link>
-        <h1 style={{ margin: 0 }}>Book: {objectId}</h1>
-      </div>
-
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      {loading && <p>Loading...</p>}
-
-      {/* Add review */}
-      <div style={{ marginTop: 16, marginBottom: 16 }}>
-        <h3>Add a review</h3>
-
-        {!isLoggedIn ? (
-          <p>
-            You must <Link to="/login">login</Link> to add a review.
-          </p>
-        ) : (
-          <form onSubmit={onCreate} style={{ display: "grid", gap: 8, maxWidth: 420 }}>
-            <textarea
-              placeholder="Write your review..."
-              value={text}
-              onChange={(e) => setText(e.target.value)}
-              rows={3}
-            />
-
-            <input
-              type="number"
-              min={1}
-              max={5}
-              value={rating}
-              onChange={(e) => setRating(Number(e.target.value))}
-            />
-
-            <button type="submit" disabled={loading}>
-              Add review
-            </button>
-          </form>
-        )}
-      </div>
-
-      {/* Reviews list */}
-      <h3>All reviews</h3>
-      {!loading && reviews.length === 0 && <p>No reviews for this book yet.</p>}
-
-      {reviews.map((r) => (
-        <div
-          key={r.id}
-          style={{
-            border: "1px solid #ddd",
-            padding: 12,
-            marginBottom: 10,
-            borderRadius: 8,
-          }}
-        >
-          <p style={{ margin: 0 }}>
-            <b>Rating:</b> {r.rating}
-          </p>
-          <p style={{ marginTop: 8 }}>{r.text}</p>
-          <p style={{ marginTop: 8, fontSize: 12, opacity: 0.7 }}>
-            User: {r.userId} — {new Date(r.createdAt).toLocaleString()}
-          </p>
+    <div className="grid" style={{ gap: 16 }}>
+      {/* Header */}
+      <div className="row" style={{ alignItems: "baseline" }}>
+        <div style={{ display: "flex", gap: 12, alignItems: "center", flexWrap: "wrap" }}>
+          <Link to="/" className="btn">
+            ← Back
+          </Link>
+          <h1 className="h1" style={{ margin: 0 }}>
+            Book: {objectId}
+          </h1>
         </div>
-      ))}
+
+        <button className="btn" type="button" onClick={loadReviews} disabled={loading}>
+          Refresh
+        </button>
+      </div>
+
+      {error && <p style={{ color: "var(--danger)", margin: 0 }}>{error}</p>}
+      {loading && <p className="muted" style={{ margin: 0 }}>Loading...</p>}
+
+      {/* Layout: left form + right list */}
+      <div className="grid twoCols">
+        {/* Add review card */}
+        <div className="card">
+          <h3 style={{ marginTop: 0 }}>Add a review</h3>
+
+          {!isLoggedIn ? (
+            <p className="muted">
+              You must <Link to="/login">login</Link> to add a review.
+            </p>
+          ) : (
+            <form onSubmit={onCreate} className="grid" style={{ maxWidth: 520 }}>
+              <textarea
+                className="textarea"
+                placeholder="Write your review..."
+                value={text}
+                onChange={(e) => setText(e.target.value)}
+                rows={4}
+              />
+
+              <input
+                className="input"
+                type="number"
+                min={1}
+                max={5}
+                value={rating}
+                onChange={(e) => setRating(Number(e.target.value))}
+              />
+
+              <button className="btn btnPrimary" type="submit" disabled={loading}>
+                Add review
+              </button>
+            </form>
+          )}
+        </div>
+
+        {/* Reviews card */}
+        <div className="card">
+          <div className="row">
+            <h3 style={{ margin: 0 }}>All reviews</h3>
+            <span className="muted">{reviews.length} total</span>
+          </div>
+
+          {!loading && reviews.length === 0 && (
+            <p className="muted" style={{ marginTop: 12 }}>
+              No reviews for this book yet.
+            </p>
+          )}
+
+          <div className="list">
+            {reviews.map((r) => (
+              <div key={r.id} className="reviewCard">
+                <div className="row" style={{ gap: 10 }}>
+                  <div style={{ fontWeight: 800 }}>Rating: {r.rating}</div>
+                  <div className="muted" style={{ fontSize: 12 }}>
+                    {new Date(r.createdAt).toLocaleString()}
+                  </div>
+                </div>
+
+                <p style={{ marginTop: 10, marginBottom: 8 }}>{r.text}</p>
+
+                <p className="muted" style={{ margin: 0, fontSize: 12 }}>
+                  User: {r.userId}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

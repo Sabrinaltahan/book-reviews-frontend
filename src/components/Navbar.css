@@ -1,0 +1,35 @@
+.navbar{
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: rgba(246,247,251,.85);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+}
+
+.navbarInner{
+  width: min(980px, 92vw);
+  margin: 0 auto;
+  padding: 12px 0;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 12px;
+}
+
+.brand{
+  font-weight: 800;
+  letter-spacing: .2px;
+}
+
+.navLinks{
+  display:flex;
+  align-items:center;
+  gap: 10px;
+}
+
+@media (max-width: 520px){
+  .brand{ font-size: 15px; }
+  .navLinks{ gap: 8px; }
+  .navLinks .btn{ padding: 8px 10px; border-radius: 10px; }
+}
