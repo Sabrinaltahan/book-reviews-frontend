@@ -11,28 +11,52 @@ type Review = {
   createdAt: string;
 };
 
+type BookDetailsType = {
+  id: string;
+  title: string;
+  authors: string[];
+  description: string;
+  thumbnail?: string;
+};
+
 export default function BookDetails() {
   const { id } = useParams();
   const nav = useNavigate();
 
   const objectId = useMemo(() => (id ? String(id) : ""), [id]);
 
+  const [book, setBook] = useState<BookDetailsType | null>(null);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(false);
+  const [bookLoading, setBookLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // add review
   const [text, setText] = useState("");
   const [rating, setRating] = useState<number>(5);
 
   const token = localStorage.getItem("token");
   const isLoggedIn = !!token;
 
+  async function loadBookDetails() {
+    if (!objectId) return;
+
+    setBookLoading(true);
+    try {
+      const data = await apiFetch<BookDetailsType>(`/books/${objectId}`);
+      setBook(data);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Failed to load book details");
+    } finally {
+      setBookLoading(false);
+    }
+  }
+
   async function loadReviews() {
     if (!objectId) return;
 
-    setError(null);
     setLoading(true);
+    setError(null);
+
     try {
       const data = await apiFetch<Review[]>(`/reviews/object/${objectId}`, {
         method: "GET",
@@ -46,6 +70,7 @@ export default function BookDetails() {
   }
 
   useEffect(() => {
+    loadBookDetails();
     loadReviews();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [objectId]);
@@ -88,14 +113,14 @@ export default function BookDetails() {
 
   return (
     <div className="grid" style={{ gap: 16 }}>
-      {/* Header */}
-      <div className="row" style={{ alignItems: "baseline" }}>
+      <div className="row">
         <div style={{ display: "flex", gap: 12, alignItems: "center", flexWrap: "wrap" }}>
           <Link to="/" className="btn">
             ← Back
           </Link>
+
           <h1 className="h1" style={{ margin: 0 }}>
-            Book: {objectId}
+            {book?.title || `Book: ${objectId}`}
           </h1>
         </div>
 
@@ -105,20 +130,50 @@ export default function BookDetails() {
       </div>
 
       {error && <p style={{ color: "var(--danger)", margin: 0 }}>{error}</p>}
-      {loading && <p className="muted" style={{ margin: 0 }}>Loading...</p>}
 
-      {/* Layout: left form + right list */}
       <div className="grid twoCols">
-        {/* Add review card */}
         <div className="card">
-          <h3 style={{ marginTop: 0 }}>Add a review</h3>
+          {bookLoading ? (
+            <p className="muted">Loading book details...</p>
+          ) : book ? (
+            <>
+              <div style={{ display: "grid", gridTemplateColumns: "120px 1fr", gap: 16 }}>
+                <img
+                  src={book.thumbnail || "https://via.placeholder.com/120x170?text=No+Image"}
+                  alt={book.title}
+                  style={{ width: 120, borderRadius: 10 }}
+                />
+
+                <div>
+                  <h2 style={{ marginTop: 0, marginBottom: 8 }}>{book.title}</h2>
+
+                  <p className="muted" style={{ margin: "0 0 8px 0" }}>
+                    {book.authors.join(", ") || "Unknown author"}
+                  </p>
+
+                  {book.description && (
+                    <>
+                      <h3>Description</h3>
+                      <p className="muted">{book.description}</p>
+                    </>
+                  )}
+                </div>
+              </div>
+            </>
+          ) : (
+            <p className="muted">No book details found.</p>
+          )}
+
+          <hr style={{ margin: "20px 0", border: "none", borderTop: "1px solid var(--border)" }} />
+
+          <h3>Add a review</h3>
 
           {!isLoggedIn ? (
             <p className="muted">
               You must <Link to="/login">login</Link> to add a review.
             </p>
           ) : (
-            <form onSubmit={onCreate} className="grid" style={{ maxWidth: 520 }}>
+            <form onSubmit={onCreate} className="grid">
               <textarea
                 className="textarea"
                 placeholder="Write your review..."
@@ -143,12 +198,13 @@ export default function BookDetails() {
           )}
         </div>
 
-        {/* Reviews card */}
         <div className="card">
           <div className="row">
             <h3 style={{ margin: 0 }}>All reviews</h3>
             <span className="muted">{reviews.length} total</span>
           </div>
+
+          {loading && <p className="muted" style={{ marginTop: 12 }}>Loading reviews...</p>}
 
           {!loading && reviews.length === 0 && (
             <p className="muted" style={{ marginTop: 12 }}>
@@ -160,7 +216,7 @@ export default function BookDetails() {
             {reviews.map((r) => (
               <div key={r.id} className="reviewCard">
                 <div className="row" style={{ gap: 10 }}>
-                  <div style={{ fontWeight: 800 }}>Rating: {r.rating}</div>
+                  <div style={{ fontWeight: 700 }}>Rating: {r.rating}</div>
                   <div className="muted" style={{ fontSize: 12 }}>
                     {new Date(r.createdAt).toLocaleString()}
                   </div>
