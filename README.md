@@ -1,73 +1,143 @@
-# React + TypeScript + Vite
+## Book Review 
+A full-stack web application where users can search for books and write reviews about them.
+I am using React, TypeScript, Node.js, Express, JWT authentication, and an external API.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Features
+User registration and login
+JWT authentication
+Search for books using an external API
+View book details
+Add book reviews
+Edit reviews
+Delete reviews
+Responsive UI
+REST API backend
+Persistent data using JSON database
 
-Currently, two official plugins are available:
+## Technologies Used
+1- Frontend
+React
+TypeScript
+Vite
+React Router
+CSS
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+2- Backend
+Node.js
+Express
+TypeScript
+JWT Authentication
+bcrypt (password hashing)
+External API
+Open Library API
+https://openlibrary.org/developers/api⁠�
 
-## React Compiler
+## Project Structure
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+book-reviews
+│
+├── book-reviews-frontend
+│   ├── src
+│   │   ├── components
+│   │   ├── pages
+│   │   │   ├── Home.tsx
+│   │   │   ├── Login.tsx
+│   │   │   ├── Register.tsx
+│   │   │   └── BookDetails.tsx
+│   │   ├── lib
+│   │   │   └── api.ts
+│   │   └── App.tsx
+│   │
+│   └── package.json
+│
+├── book-reviews-backend
+│   ├── src
+│   │   ├── routes
+│   │   │   ├── auth.ts
+│   │   │   ├── reviews.ts
+│   │   │   └── books.ts
+│   │   ├── middleware
+│   │   ├── data
+│   │   │   └── db.json
+│   │   └── index.ts
+│   │
+│   └── package.json
+│
+└── README.md
 
-## Expanding the ESLint configuration
+## Installation
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+Backend Setup
+(https://github.com/Sabrinaltahan/book-reviews-backend.git)
+cd book-reviews-backend
+npm install
+npm run dev
+The backend will run on:
+http://localhost:4000
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+Frontend Setup
+(https://github.com/Sabrinaltahan/book-reviews-frontend.git)
+cd book-reviews-frontend
+npm install
+npm run dev
+The frontend will run on:
+http://localhost:5174
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## Authentication
+The application uses JWT tokens for authentication.
+After login:
+The backend generates a JWT token
+The token is stored in localStorage
+The token is sent in API requests using the header:
+## Review System
+Users can:
+Add Review
+POST /reviews
+Get Reviews
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+GET /reviews/object/:objectId
+Update Review:
+PUT /reviews/:id
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Delete Review:
+DELETE /reviews/:id
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+Reviews include:
+text
+rating (1–5)
+userId
+createdAt
+## Security
+Passwords are hashed using:
+bcrypt
+Authentication is handled using:
+JWT (JSON Web Tokens)
+🖥 Example Workflow
+Register a user
+Login
+Search for a book
+Open book details
+Add a review
+Edit or delete the review
+## Example Books
+
+Harry Potter
+
+Pride and Prejudice
+
+the hobbit
+
+Deep Work
+
+## Author:
+Developed by: Sabrin Altahan
+
+## Github:
+Backend link:
+https://github.com/Sabrinaltahan/book-reviews-backend.git
+
+Frontend link:
+https://github.com/Sabrinaltahan/book-reviews-frontend.git
+
+Webbsite link:
