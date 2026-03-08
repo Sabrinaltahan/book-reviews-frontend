@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:4000";
+const API_URL = "https://book-reviews-api-na4w.onrender.com";
 
 export async function apiFetch<T>(
   path: string,
