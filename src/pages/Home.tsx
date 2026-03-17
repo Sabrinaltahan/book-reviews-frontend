@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { apiFetch } from "../lib/api";
 
 type Review = {
-  id: string;
+  _id: string;
   objectId: string;
   userId: string;
   text: string;
@@ -144,7 +144,7 @@ export default function Home() {
   }
 
   function startEdit(r: Review) {
-    setEditingId(r.id);
+    setEditingId(r._id);
     setEditText(r.text);
     setEditRating(r.rating);
     setError(null);
@@ -359,7 +359,7 @@ export default function Home() {
 
           <div className="list">
             {reviews.map((r) => (
-              <div key={r.id} className="reviewCard">
+              <div key={r._id} className="reviewCard">
                 <div className="row" style={{ alignItems: "baseline" }}>
                   <h4 style={{ margin: 0 }}>
                     <Link to={`/books/${r.objectId}`}>Book: {r.objectId}</Link>
@@ -370,7 +370,7 @@ export default function Home() {
                   </span>
                 </div>
 
-                {editingId === r.id ? (
+                {editingId === r._id ? (
                   <>
                     <textarea
                       className="textarea"
@@ -399,7 +399,7 @@ export default function Home() {
                         <button
                           className="btn btnPrimary"
                           type="button"
-                          onClick={() => onSaveEdit(r.id)}
+                          onClick={() => onSaveEdit(r._id)}
                           disabled={loading}
                         >
                           Save
@@ -440,7 +440,7 @@ export default function Home() {
                       <button
                         className="btn btnDanger"
                         type="button"
-                        onClick={() => onDelete(r.id)}
+                        onClick={() => onDelete(r._id)}
                         disabled={loading}
                       >
                         Delete
